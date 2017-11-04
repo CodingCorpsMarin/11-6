@@ -1,0 +1,106 @@
+Use an existing rails blog/app that you've made or create a new one
+
+First things first, go to rubygems and get the Devise gem
+https://rubygems.org/gems/devise/versions/4.2.0
+
+Copy the gemfile command into your clipboard and paste it into your Gemfile
+Then, since we've edited our Gemfile, we need to bundle install again
+
+Next, we need to install Devise.
+> rails g devise:install
+
+This gives you some helpful hints as to what to do next (if you want)
+We won't really add any of these other than the flash messages.
+Add to application.html.erb above the yield:
+  <p class='notice'><%= notice %></p>
+  <p class='alert'><%= alert %></p>
+  
+These give the user helpful messages while they're working in the application
+
+Next, generate the views for devise:
+> rails g devise:views
+
+This creates a views suite for your model
+
+Now, create a model, in this case, a User
+
+> rails g devise User
+This creates a User model and migration with the proper attributes for authentication.
+Check out the migration for the attributes and choose which you want to include by commenting/uncommenting
+Migrate the db
+> rails db:migrate
+
+Start/restart server
+Go to /users/sign_up route and register your first user
+(/users/sign_in to log in)
+Make links to these routes in the application.html.erb file
+Before the yield:
+  <%= link_to "Sign Up" new_user_registration_path %>
+  <%= link_to "Sign In" new_user_session_path %>
+Create a couple users
+
+Now we need to edit the posts controller
+
+Edit the new action
+  
+  def new
+    @posst = current_user.posts.build
+  end
+
+And the create action
+  
+  def create
+    @post = current_user.posts.build(post_params)
+    ...
+  end
+  
+Since we made these posts before we implemented Devise, we need to adjust the model/migrations so that posts and users are related
+
+> rails g migration add_user_id_to_posts user_id:integer
+
+This creates a migration file that adds a column to the posts table for user_id
+
+Migrate this change.
+> rails db:migrate
+
+Add associations
+In the User model:
+  has_many :posts
+
+In the Post model:
+  belongs_to :user
+
+Create a new post with your newly made user, go to the /posts/new route in your browser and fill in the fields
+
+Check your db to see it
+
+> rails c
+> Post.last
+
+Check all your posts (if they exist)
+> Post.all
+
+If any of your previous posts were made before a user model was added, this is a good time to give them a user_id
+Set a post to the specific Post object in question
+> post = Post.find(#)
+Set the user_id
+> post.user_id = #
+
+Adjust your views/posts/index to show the user for each post
+Your format may vary, but essentially include post.user.email (or whatever) in your loop listing out the posts
+
+Now let's restrict user privileges to only editing and destroying their own posts
+In the Posts Controller, add a new before_action
+  before_action :authenticate_user!, except: [:index, :show]
+
+Before actions perform a check before the route loads. In this case, it is running a true/false on if the proper user is authenticated. If not, only the index and show routes will be available.
+
+Now go to the posts index file and add a conditional to only show the show and destroy links to the proper user
+
+Wrap your edit and destroy links with
+  <% if post.user == current_user %>
+  <% end %>
+
+There are plenty of other features in Devise, check the documentation for more info.
+
+  
