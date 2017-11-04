@@ -1,0 +1,14 @@
+
+Competencies
+
+There are many ways to implement user authentication with Rails, one of the easiest is by using the Devise Gem
+Devise uses its own generators to generate views, models, and migrations for models requiring registrations and passwords
+Devise will also encrypt passwords automatically
+Devise also comes bundled with a bunch of helper functions to make authentication easier, read about all of them in the documentation
+
+Applications
+Implement user authentication in Rails applications
+
+
+Resources:
+https://github.com/plataformatec/devise
