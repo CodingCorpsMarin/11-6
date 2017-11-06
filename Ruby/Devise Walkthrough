@@ -35,8 +35,8 @@ Go to /users/sign_up route and register your first user
 (/users/sign_in to log in)
 Make links to these routes in the application.html.erb file
 Before the yield:
-  <%= link_to "Sign Up" new_user_registration_path %>
-  <%= link_to "Sign In" new_user_session_path %>
+  <%= link_to "Sign Up", new_user_registration_path %>
+  <%= link_to "Sign In", new_user_session_path %>
 Create a couple users
 
 Now we need to edit the posts controller
