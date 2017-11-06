@@ -44,7 +44,7 @@ Now we need to edit the posts controller
 Edit the new action
   
   def new
-    @posst = current_user.posts.build
+    @post = current_user.posts.build
   end
 
 And the create action
